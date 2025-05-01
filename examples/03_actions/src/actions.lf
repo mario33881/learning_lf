@@ -1,0 +1,32 @@
+target Python {
+    timeout: 10 sec,
+    keepalive: true
+}
+
+main reactor actions {
+
+    logical action logical_action;
+    physical action physical_action;
+
+    reaction(startup) -> logical_action, physical_action {=
+        print("Running start reaction")
+        logical_action.schedule(SEC(1))
+        physical_action.schedule(SEC(1))
+    =}
+
+    reaction(logical_action) -> logical_action {=
+        print("Running the reaction triggered by logical_action")
+        print("logical time elapsed: ", lf.time.logical_elapsed())
+        print("physical time elapsed: ", lf.time.physical_elapsed())
+        print("")
+        logical_action.schedule(SEC(1))
+    =}
+
+    reaction(physical_action) -> physical_action {=
+        print("Running the reaction triggered by physical_action")
+        print("logical time elapsed: ", lf.time.logical_elapsed())
+        print("physical time elapsed: ", lf.time.physical_elapsed())
+        print("")
+        physical_action.schedule(SEC(1))
+    =}
+}
